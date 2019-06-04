@@ -107,6 +107,35 @@ import update from 'react-addons-update'
 //   }
 // }
 class App extends React.Component {
+  //컴포넌트가 DOM 위에 만들어지기 전에 실행
+  componentWillMount() {
+    alert("컴포넌트가 DOM 위에 만들어지기 전에 실행")
+  }
+
+  //컴포넌트가 만들어지고 첫 렌더링을 다 마친후 실행되는 메소드
+  componentDidMount() {
+    alert("컴포넌트가 만들어지고 첫 렌더링을 다 마친후 실행되는 메소드")
+  }
+
+  //컴포넌트가 prop 을 새로 받았을 때 실행됩니다.
+  componentWillReceiveProps(nextProps) {
+    console.log("컴포넌트가 prop 을 새로 받았을 때 실행됩니다. " + JSON.stringify(nextProps));
+  }
+
+  //컴포넌트가 업데이트 되기 전에 실행됩니다.
+  componentWillUpdate(nextProps, nextState) {
+    console.log("컴포넌트가 업데이트 되기 전에 실행됩니다. " + JSON.stringify(nextProps) + " " + JSON.stringify(nextState));
+  }
+
+  //컴포넌트가 리렌더링을 마친 후 실행됩니다.
+  componentDidUpdate(prevProps, prevState) {
+    console.log("컴포넌트가 리렌더링을 마친 후 실행됩니다. " + JSON.stringify(prevProps) + " " + JSON.stringify(prevState));
+  }
+
+  //컴포넌트가 DOM 에서 사라진 후 실행되는 메소드입니다.
+  componentWillUnmount() {
+    console.log("컴포넌트가 DOM 에서 사라진 후 실행되는 메소드입니다.");
+  }
 
   render() {
     return (
@@ -127,9 +156,9 @@ class Contacts extends React.Component {
         { name: "David", phone: "010-0000-0004" }
       ],
       selectedKey: -1,
-      selected:{
-        name : "",
-        phone : ""
+      selected: {
+        name: "",
+        phone: ""
       }
     };
   }
@@ -149,16 +178,16 @@ class Contacts extends React.Component {
       console.log("key select cancelled");
       this.setState({
         selectedKey: -1,
-        selected : {
-          name : "",
-          phone : ""
+        selected: {
+          name: "",
+          phone: ""
         }
       });
       return;
     }
     this.setState({
       selectedKey: key,
-      selected : this.state.contactData[key]
+      selected: this.state.contactData[key]
     });
     console.log(key + " is Selected");
   }
@@ -188,20 +217,19 @@ class Contacts extends React.Component {
     });
   }
 
-  _editContact(name , phone)
-  {
+  _editContact(name, phone) {
     this.setState({
-      contactData : update(
-        this.state.contactData,{
-          [this.state.selectedKey] : {
-            name : {$set : name},
-            phone : {$set : phone}
+      contactData: update(
+        this.state.contactData, {
+          [this.state.selectedKey]: {
+            name: { $set: name },
+            phone: { $set: phone }
           }
         }
       ),
-      selected : {
-        name : name,
-        phone : phone
+      selected: {
+        name: name,
+        phone: phone
       }
     })
   }
@@ -229,8 +257,8 @@ class Contacts extends React.Component {
         <ContactCreator onInsert={this._insertContact.bind(this)} />
         <ContactRemover onRemove={this._removeContact.bind(this)} />
         <ContactEditer onEdit={this._editContact.bind(this)}
-        isSelected={(this.state.selectedKey !== -1)} 
-        contact = {this.state.selected}/>
+          isSelected={(this.state.selectedKey !== -1)}
+          contact={this.state.selected} />
       </div>
     );
   }
@@ -241,9 +269,8 @@ class ContactInfo extends React.Component {
   handleClick() {
     this.props.onSelect(this.props.contactKey);
   }
-  shouldComponentUpdate(nextProps, nestState)
-  {
-    return(JSON.stringify(nextProps) !== JSON.stringify(this.props));
+  shouldComponentUpdate(nextProps, nestState) {
+    return (JSON.stringify(nextProps) !== JSON.stringify(this.props));
   }
   render() {
     console.log("rendered: " + this.props.name);
@@ -345,17 +372,16 @@ class ContactEditer extends React.Component {
   }
 
   handleClick() {
-    if(!this.props.isSelected)
-    {
+    if (!this.props.isSelected) {
       console.log("contact not selected");
       return;
     }
-    this.props.onEdit(this.state.name , this.state.phone);
+    this.props.onEdit(this.state.name, this.state.phone);
   }
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps) {
     this.setState({
-      name : nextProps.contact.name,
-      phone : nextProps.contact.phone
+      name: nextProps.contact.name,
+      phone: nextProps.contact.phone
     });
   }
   render() {
